@@ -15,53 +15,35 @@ import es.mbarrben.aroundme.android.R;
 import es.mbarrben.aroundme.android.adapter.MediaAdapter;
 import es.mbarrben.aroundme.android.fragment.AroundMeFragment;
 import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment;
+import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment.OnLocationChangeListener;
 import es.mbarrben.aroundme.android.instagram.Instagram;
 import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 
-public class AroundMeActivity extends SherlockFragmentActivity {
+public class AroundMeActivity extends SherlockFragmentActivity implements OnLocationChangeListener {
+    private static final int DISTANCE_METRES = 10000;
 
     private Instagram instagram;
     private AroundMeFragment aroundMeFragment;
     private AroundMeMapFragment mapFragment;
+
+    private boolean isAuthenticated = false;
 
     private DialogListener authDialogListener = new DialogListener() {
 
         @Override
         public void onError(DialogError error) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
         public void onComplete(Bundle values) {
-            final double lat = 40.4051016;
-            final double lng = -3.9981401;
-            final int distanceMetres = 10000;
-
-            SafeAsyncTask<InstagramCollection<MediaPost>> task = new SafeAsyncTask<InstagramCollection<MediaPost>>() {
-
-                @Override
-                public InstagramCollection<MediaPost> call() throws Exception {
-                    return instagram.fetchNearMediaCollection(lat, lng, distanceMetres);
-                }
-
-                @Override
-                protected void onSuccess(InstagramCollection<MediaPost> media) throws Exception {
-                    List<MediaPost> mediaList = media.getData();
-                    MediaAdapter adapter = new MediaAdapter(getApplicationContext());
-                    adapter.setMediaList(mediaList);
-                    // aroundMeFragment.setListAdapter(adapter);
-                    mapFragment.setMediaPostCollection(mediaList);
-                }
-
-            };
-            task.execute();
+            isAuthenticated = true;
+            enableLocation();
         }
 
         @Override
         public void onCancel() {
             // TODO Auto-generated method stub
-
         }
     };
 
@@ -78,10 +60,57 @@ public class AroundMeActivity extends SherlockFragmentActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        disableLocation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isAuthenticated) {
+            enableLocation();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getSupportMenuInflater().inflate(R.menu.aroundme, menu);
         return true;
+    }
+
+    @Override
+    public void onLocationChange(final double latitude, final double longitude) {
+        SafeAsyncTask<InstagramCollection<MediaPost>> task = new SafeAsyncTask<InstagramCollection<MediaPost>>() {
+
+            @Override
+            public InstagramCollection<MediaPost> call() throws Exception {
+                return instagram.fetchNearMediaCollection(latitude, longitude, DISTANCE_METRES);
+            }
+
+            @Override
+            protected void onSuccess(InstagramCollection<MediaPost> media) throws Exception {
+                List<MediaPost> mediaList = media.getData();
+                MediaAdapter adapter = new MediaAdapter(getApplicationContext());
+                adapter.setMediaList(mediaList);
+                // aroundMeFragment.setListAdapter(adapter);
+                mapFragment.setMediaPostCollection(mediaList);
+            }
+
+        };
+        task.execute();
+    }
+
+    private void enableLocation() {
+        if (mapFragment != null) {
+            mapFragment.enableLocation(AroundMeActivity.this);
+        }
+    }
+
+    private void disableLocation() {
+        if (mapFragment != null) {
+            mapFragment.disableLocation();
+        }
     }
 
 }

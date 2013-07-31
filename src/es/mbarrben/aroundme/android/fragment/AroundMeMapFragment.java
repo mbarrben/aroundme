@@ -16,25 +16,66 @@ import com.twotoasters.clusterkraf.InputPoint;
 import com.twotoasters.clusterkraf.Options;
 
 import es.mbarrben.aroundme.android.map.ClusterMapOptions;
+import es.mbarrben.aroundme.android.map.OnSignificantLocationChangeListener;
 
 public class AroundMeMapFragment extends SupportMapFragment {
 
     private ArrayList<InputPoint> inputPoints;
     private Options options;
     private Clusterkraf clusterkraf;
+    private OnLocationChangeListener onLocationChangeListener;
+    private boolean isLocationEnabled = false;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        enableLocationIfNeeded();
+    }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        if (clusterkraf != null) {
-            clusterkraf.clear();
-            clusterkraf = null;
+        // if (clusterkraf != null) {
+        // clusterkraf.clear();
+        // clusterkraf = null;
+        // }
+
+        disableLocation();
+    }
+
+    private void enableLocationIfNeeded() {
+        if (getMap() == null) {
+            return;
+        }
+
+        if (isLocationEnabled) {
+            getMap().setMyLocationEnabled(true);
+            getMap().setOnMyLocationChangeListener(new OnSignificantLocationChangeListener() {
+                @Override
+                public void onSignificantLocationChange(android.location.Location location) {
+                    onLocationChangeListener.onLocationChange(location.getLatitude(), location.getLongitude());
+                }
+            });
+        }
+    }
+
+    public void enableLocation(OnLocationChangeListener listener) {
+        onLocationChangeListener = listener;
+        isLocationEnabled = true;
+        enableLocationIfNeeded();
+    }
+
+    public void disableLocation() {
+        onLocationChangeListener = null;
+        isLocationEnabled = false;
+        if (getMap() != null) {
+            getMap().setMyLocationEnabled(false);
+            getMap().setOnMyLocationChangeListener(null);
         }
     }
 
     public void setMediaPostCollection(List<MediaPost> mediaList) {
-
         if (getMap() != null && mediaList != null && !mediaList.isEmpty()) {
             getMap().setOnCameraChangeListener(new OnCameraChangeListener() {
                 @Override
@@ -65,5 +106,9 @@ public class AroundMeMapFragment extends SupportMapFragment {
 
             clusterkraf = new Clusterkraf(getMap(), options, inputPoints);
         }
+    }
+
+    public interface OnLocationChangeListener {
+        void onLocationChange(double latitude, double longitude);
     }
 }
