@@ -75,7 +75,7 @@ public class Instagram {
         mAuthDialog.show();
     }
 
-    public InstagramCollection<MediaPost> fetchNearPics(double latitude, double longitude) {
+    public InstagramCollection<MediaPost> fetchNearMediaCollection(double latitude, double longitude) {
         final String endPoint = "media/search";
         final Parameter lat = new Parameter("lat", latitude);
         final Parameter lng = new Parameter("lng", longitude);

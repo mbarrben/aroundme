@@ -42,7 +42,7 @@ public class AroundMeFragment extends SherlockListFragment {
 
                 @Override
                 public InstagramCollection<MediaPost> call() throws Exception {
-                    return instagram.fetchNearPics(lat, lng);
+                    return instagram.fetchNearMediaCollection(lat, lng);
                 }
 
                 @Override
