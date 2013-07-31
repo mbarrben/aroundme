@@ -75,11 +75,12 @@ public class Instagram {
         mAuthDialog.show();
     }
 
-    public InstagramCollection<MediaPost> fetchNearMediaCollection(double latitude, double longitude) {
+    public InstagramCollection<MediaPost> fetchNearMediaCollection(double latitude, double longitude, int distanceMetres) {
         final String endPoint = "media/search";
         final Parameter lat = new Parameter("lat", latitude);
         final Parameter lng = new Parameter("lng", longitude);
-        return getInstagramClient().fetchCollection(endPoint, MediaPost.class, lat, lng);
+        final Parameter distance = new Parameter("distance", distanceMetres);
+        return getInstagramClient().fetchCollection(endPoint, MediaPost.class, lat, lng, distance);
     }
 
     private InstagramClient getInstagramClient() {
