@@ -13,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.twotoasters.clusterkraf.Clusterkraf;
 import com.twotoasters.clusterkraf.InputPoint;
 import com.twotoasters.clusterkraf.Options;
@@ -37,10 +38,23 @@ public class AroundMeMapFragment extends SupportMapFragment {
 
     private void moveToLastKownLocation() {
         android.location.Location lastKnownLocation = Utils.getLastKnownLocation(getActivity());
-        double latitude = lastKnownLocation.getLatitude();
-        double longitude = lastKnownLocation.getLongitude();
+        moveToLocation(lastKnownLocation, 11);
+    }
+
+    private void moveToLocation(android.location.Location location, float zoom) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
         LatLng latLng = new LatLng(latitude, longitude);
-        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
+    private void moveToInputPoints() {
+        LatLngBounds.Builder builder = LatLngBounds.builder();
+
+        for (InputPoint point : inputPoints) {
+            builder.include(point.getMapPosition());
+        }
+        getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
     }
 
     @Override
@@ -53,6 +67,11 @@ public class AroundMeMapFragment extends SupportMapFragment {
     public void onPause() {
         super.onPause();
         disableLocation();
+
+        if (clusterkraf != null) {
+            clusterkraf.clear();
+            clusterkraf = null;
+        }
     }
 
     private void enableLocationIfNeeded() {
@@ -66,6 +85,7 @@ public class AroundMeMapFragment extends SupportMapFragment {
                 @Override
                 public void onSignificantLocationChange(android.location.Location location) {
                     onLocationChangeListener.onLocationChange(location.getLatitude(), location.getLongitude());
+                    moveToLocation(location, 15);
                 }
             });
         }
@@ -90,7 +110,7 @@ public class AroundMeMapFragment extends SupportMapFragment {
         if (getMap() != null && mediaList != null && !mediaList.isEmpty()) {
             getMap().setOnCameraChangeListener(new OnCameraChangeListener() {
                 @Override
-                public void onCameraChange(CameraPosition arg0) {
+                public void onCameraChange(CameraPosition cameraPosition) {
                     initCluster();
                 }
             });
@@ -112,14 +132,16 @@ public class AroundMeMapFragment extends SupportMapFragment {
     private void initCluster() {
         if (inputPoints != null) {
             if (options == null) {
-                options = new ClusterMapOptions(getActivity(), inputPoints);
+                options = new ClusterMapOptions(getActivity(), inputPoints, null);
             }
 
             clusterkraf = new Clusterkraf(getMap(), options, inputPoints);
+            moveToInputPoints();
         }
     }
 
     public interface OnLocationChangeListener {
         void onLocationChange(double latitude, double longitude);
     }
+
 }
