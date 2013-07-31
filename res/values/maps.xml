@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="maps_api_key">AIzaSyAbYr5mwZlfEIWgzCixebTjd9HWeptneLI</string>
+    <string name="google_maps_package">com.google.android.apps.maps</string>
+    <string name="google_maps_play_store_url">market://details?id=com.google.android.apps.maps</string>
+
+</resources>
