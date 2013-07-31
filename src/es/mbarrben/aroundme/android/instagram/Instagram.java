@@ -1,4 +1,4 @@
-package es.mbarrben.instagramaroundme.android.instagram;
+package es.mbarrben.aroundme.android.instagram;
 
 import android.app.Activity;
 import android.os.Bundle;

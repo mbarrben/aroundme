@@ -1,12 +1,12 @@
-package es.mbarrben.instagramaroundme.android.activity;
+package es.mbarrben.aroundme.android.activity;
 
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-import es.mbarrben.instagramaroundme.android.R;
-import es.mbarrben.instagramaroundme.android.instagram.Instagram;
+import es.mbarrben.aroundme.android.R;
+import es.mbarrben.aroundme.android.instagram.Instagram;
 
 public class AroundMeActivity extends SherlockFragmentActivity {
 

@@ -36,8 +36,7 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import es.mbarrben.instagramaroundme.android.R;
+import es.mbarrben.aroundme.android.R;
 
 /**
  * Dialog box used for Instagram authentication flow. For more information
