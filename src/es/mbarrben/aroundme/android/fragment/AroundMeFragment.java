@@ -10,6 +10,7 @@ import com.blinxbox.restig.auth.InstagramAuthDialog.DialogListener;
 import com.blinxbox.restinstagram.InstagramCollection;
 import com.blinxbox.restinstagram.types.MediaPost;
 
+import es.mbarrben.aroundme.android.adapter.MediaAdapter;
 import es.mbarrben.aroundme.android.instagram.Instagram;
 import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 
@@ -48,7 +49,9 @@ public class AroundMeFragment extends SherlockListFragment {
                 @Override
                 protected void onSuccess(InstagramCollection<MediaPost> media) throws Exception {
                     List<MediaPost> mediaList = media.getData();
-                    
+                    MediaAdapter adapter = new MediaAdapter(getActivity());
+                    adapter.setMediaList(mediaList);
+                    setListAdapter(adapter);
                 }
 
             };
