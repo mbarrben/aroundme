@@ -7,6 +7,11 @@ import android.util.Log;
 import com.blinxbox.restig.auth.DialogError;
 import com.blinxbox.restig.auth.InstagramAuthDialog;
 import com.blinxbox.restig.auth.InstagramAuthDialog.DialogListener;
+import com.blinxbox.restinstagram.DefaultInstagramClient;
+import com.blinxbox.restinstagram.InstagramClient;
+import com.blinxbox.restinstagram.InstagramCollection;
+import com.blinxbox.restinstagram.Parameter;
+import com.blinxbox.restinstagram.types.MediaPost;
 
 public class Instagram {
     private static final String CLIENT_ID = "5b755d7249b6432bb37d2c5ff2dfaca3";
@@ -14,9 +19,10 @@ public class Instagram {
     private static final String CALLBACK_URL = "aroundme://callback";
 
     private Activity mActivity;
-    private String mAuthToken;
+    private String mAccessToken;
     private DialogListener mExternalDialogListener;
     private InstagramAuthDialog mAuthDialog;
+    private InstagramClient mInstagramClient;
 
     private DialogListener mAuthDialoglistener = new DialogListener() {
 
@@ -27,20 +33,16 @@ public class Instagram {
             if (mExternalDialogListener != null) {
                 mExternalDialogListener.onError(error);
             }
-
-            // dismissDialogIfNeeded();
         }
 
         @Override
         public void onComplete(Bundle values) {
-            mAuthToken = values.getString("access_token");
-            Log.i(getClass().getName(), "access token = " + mAuthToken);
+            mAccessToken = values.getString("access_token");
+            Log.i(getClass().getName(), "access token = " + mAccessToken);
 
             if (mExternalDialogListener != null) {
                 mExternalDialogListener.onComplete(values);
             }
-
-            // dismissDialogIfNeeded();
         }
 
         @Override
@@ -50,8 +52,6 @@ public class Instagram {
             if (mExternalDialogListener != null) {
                 mExternalDialogListener.onCancel();
             }
-
-            // dismissDialogIfNeeded();
         }
     };
 
@@ -75,9 +75,18 @@ public class Instagram {
         mAuthDialog.show();
     }
 
-    private void dismissDialogIfNeeded() {
-        if (mAuthDialog != null && mAuthDialog.isShowing()) {
-            mAuthDialog.dismiss();
+    public InstagramCollection<MediaPost> fetchNearPics(double latitude, double longitude) {
+        final String endPoint = "media/search";
+        final Parameter lat = new Parameter("lat", latitude);
+        final Parameter lng = new Parameter("lng", longitude);
+        return getInstagramClient().fetchCollection(endPoint, MediaPost.class, lat, lng);
+    }
+
+    private InstagramClient getInstagramClient() {
+        if (mInstagramClient == null) {
+            mInstagramClient = new DefaultInstagramClient(Instagram.CLIENT_ID, mAccessToken);
         }
+
+        return mInstagramClient;
     }
 }

@@ -6,7 +6,6 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
 import es.mbarrben.aroundme.android.R;
-import es.mbarrben.aroundme.android.instagram.Instagram;
 
 public class AroundMeActivity extends SherlockFragmentActivity {
 
@@ -14,9 +13,6 @@ public class AroundMeActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aroundme);
-
-        Instagram instagram = new Instagram(this);
-        instagram.authorize();
     }
 
     @Override
