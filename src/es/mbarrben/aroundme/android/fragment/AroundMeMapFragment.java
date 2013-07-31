@@ -3,10 +3,12 @@ package es.mbarrben.aroundme.android.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.blinxbox.restinstagram.types.MediaPost;
 import com.blinxbox.restinstagram.types.MediaPost.Location;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -17,6 +19,7 @@ import com.twotoasters.clusterkraf.Options;
 
 import es.mbarrben.aroundme.android.map.ClusterMapOptions;
 import es.mbarrben.aroundme.android.map.OnSignificantLocationChangeListener;
+import es.mbarrben.aroundme.android.map.Utils;
 
 public class AroundMeMapFragment extends SupportMapFragment {
 
@@ -27,6 +30,20 @@ public class AroundMeMapFragment extends SupportMapFragment {
     private boolean isLocationEnabled = false;
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        moveToLastKownLocation();
+    }
+
+    private void moveToLastKownLocation() {
+        android.location.Location lastKnownLocation = Utils.getLastKnownLocation(getActivity());
+        double latitude = lastKnownLocation.getLatitude();
+        double longitude = lastKnownLocation.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         enableLocationIfNeeded();
@@ -35,12 +52,6 @@ public class AroundMeMapFragment extends SupportMapFragment {
     @Override
     public void onPause() {
         super.onPause();
-
-        // if (clusterkraf != null) {
-        // clusterkraf.clear();
-        // clusterkraf = null;
-        // }
-
         disableLocation();
     }
 
