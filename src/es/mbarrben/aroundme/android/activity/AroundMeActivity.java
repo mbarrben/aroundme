@@ -93,7 +93,7 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
                 List<MediaPost> mediaList = media.getData();
                 MediaAdapter adapter = new MediaAdapter(getApplicationContext());
                 adapter.setMediaList(mediaList);
-                // aroundMeFragment.setListAdapter(adapter);
+                aroundMeFragment.setListAdapter(adapter);
                 mapFragment.setMediaPostCollection(mediaList);
             }
 

@@ -3,5 +3,6 @@
     <dimen name="cluster_text_size_small">11.5sp</dimen>
     <dimen name="cluster_text_size_medium">14sp</dimen>
     <dimen name="cluster_text_size_large">16.5sp</dimen>
+    <dimen name="visible_map_height">400dip</dimen>
 
 </resources>

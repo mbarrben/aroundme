@@ -10,12 +10,10 @@
         class="es.mbarrben.aroundme.android.fragment.AroundMeMapFragment"
         android:tag="map" />
 
-    <!--
-         <fragment
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="es.mbarrben.aroundme.android.fragment.AroundMeFragment"
         android:tag="aroundme" />
-    -->
 
 </FrameLayout>
