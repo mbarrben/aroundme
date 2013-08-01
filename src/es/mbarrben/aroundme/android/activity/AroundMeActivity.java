@@ -1,7 +1,10 @@
 package es.mbarrben.aroundme.android.activity;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -17,10 +20,12 @@ import es.mbarrben.aroundme.android.fragment.AroundMeFragment;
 import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment;
 import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment.OnLocationChangeListener;
 import es.mbarrben.aroundme.android.instagram.Instagram;
+import es.mbarrben.aroundme.android.instagram.MediaPostComparator;
+import es.mbarrben.aroundme.android.map.Utils;
 import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 
 public class AroundMeActivity extends SherlockFragmentActivity implements OnLocationChangeListener {
-    private static final int DISTANCE_METRES = 10000;
+    private static final int DISTANCE_METRES = 5000;
 
     private Instagram instagram;
     private AroundMeFragment aroundMeFragment;
@@ -51,7 +56,7 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aroundme);
-        
+
         getSherlock().getActionBar().setIcon(R.drawable.title_image);
         getSherlock().getActionBar().setDisplayShowTitleEnabled(false);
         getSherlock().getActionBar().setDisplayUseLogoEnabled(false);
@@ -85,20 +90,27 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
 
     @Override
     public void onLocationChange(final double latitude, final double longitude) {
-        SafeAsyncTask<InstagramCollection<MediaPost>> task = new SafeAsyncTask<InstagramCollection<MediaPost>>() {
+        SafeAsyncTask<List<MediaPost>> task = new SafeAsyncTask<List<MediaPost>>() {
 
             @Override
-            public InstagramCollection<MediaPost> call() throws Exception {
-                return instagram.fetchNearMediaCollection(latitude, longitude, DISTANCE_METRES);
+            public List<MediaPost> call() throws Exception {
+                InstagramCollection<MediaPost> collection = instagram.fetchNearMediaCollection(latitude, longitude,
+                        DISTANCE_METRES);
+                List<MediaPost> media = new ArrayList<MediaPost>(collection.getData());
+
+                Location location = Utils.getLastKnownLocation(getApplicationContext());
+                MediaPostComparator comparator = new MediaPostComparator(location);
+                Collections.sort(media, comparator);
+
+                return media;
             }
 
             @Override
-            protected void onSuccess(InstagramCollection<MediaPost> media) throws Exception {
-                List<MediaPost> mediaList = media.getData();
+            protected void onSuccess(List<MediaPost> media) throws Exception {
                 MediaAdapter adapter = new MediaAdapter(getApplicationContext());
-                adapter.setMediaList(mediaList);
+                adapter.setMediaList(media);
                 aroundMeFragment.setListAdapter(adapter);
-                mapFragment.setMediaPostCollection(mediaList);
+                mapFragment.setMediaPostCollection(media);
             }
 
         };
