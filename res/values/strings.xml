@@ -5,5 +5,14 @@
     <string name="action_settings">Settings</string>
     <string name="loading">Loading&#8230;</string>
     <string name="distance_metres">%1$s m</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- dialogs -->
+    <string name="dialog_gps_not_enabled_title">GPS disabled</string>
+    <string name="dialog_gps_not_enabled">GPS is not enabled. This app will work better with GPS. Do you want to enable it?</string>
+    <string name="dialog_dont_ask_again">Don\'t ask again</string>
+    <string name="dialog_no_internet">Your device has not Internet connection, would you like to check your network settings?</string>
+    <string name="dialog_no_internet_title">Network error</string>
 
 </resources>

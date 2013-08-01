@@ -6,8 +6,8 @@ import java.util.List;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.blinxbox.restig.auth.DialogError;
 import com.blinxbox.restig.auth.InstagramAuthDialog.DialogListener;
@@ -24,7 +24,7 @@ import es.mbarrben.aroundme.android.instagram.MediaPostComparator;
 import es.mbarrben.aroundme.android.map.Utils;
 import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 
-public class AroundMeActivity extends SherlockFragmentActivity implements OnLocationChangeListener {
+public class AroundMeActivity extends BaseActivity implements OnLocationChangeListener {
     private static final int DISTANCE_METRES = 5000;
 
     private Instagram instagram;
@@ -62,9 +62,6 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
 
         aroundMeFragment = (AroundMeFragment) getSupportFragmentManager().findFragmentByTag("aroundme");
         mapFragment = (AroundMeMapFragment) getSupportFragmentManager().findFragmentByTag("map");
-
-        instagram = new Instagram(this);
-        instagram.authorize(authDialogListener);
     }
 
     @Override
@@ -76,8 +73,17 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!isOnline()) {
+            createNewNetworkErrorDialog().show();
+            return;
+        }
+
         if (isAuthenticated) {
             enableLocation();
+        } else {
+            instagram = new Instagram(this);
+            instagram.authorize(authDialogListener);
         }
     }
 
@@ -117,6 +123,14 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
     }
 
     private void enableLocation() {
+        try {
+            if (!isGpsEnabled() && hasToAskForGpsAgain()) {
+                createNewEnableGpsDialog().show();
+            }
+        } catch (Exception e) {
+            Log.e(getClass().getName(), "GPS not available");
+        }
+
         if (mapFragment != null) {
             mapFragment.enableLocation(AroundMeActivity.this);
         }
