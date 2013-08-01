@@ -47,6 +47,8 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
         MediaRowHolder holder = new MediaRowHolder();
         holder.user = (TextView) view.findViewById(R.id.media_user);
         holder.thumb = (ImageView) view.findViewById(R.id.media_thumb);
+        holder.caption = (TextView) view.findViewById(R.id.media_caption);
+        holder.userPic = (ImageView) view.findViewById(R.id.media_user_pic);
         view.setTag(holder);
         return view;
     }
@@ -57,16 +59,22 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
         MediaRowHolder holder = (MediaRowHolder) view.getTag();
 
         final String userName = post.getUser().getFullName();
-        final String imageUrl = post.getImages().getThumbnail().getUrl();
+        final String imageUrl = post.getImages().getStandardResolution().getUrl();
+        final String caption = post.getCaption().getText();
+        final String userPicUrl = post.getUser().getProfilePicture();
 
         holder.user.setText(userName);
+        holder.caption.setText(caption);
 
-        Picasso.with(getContext()).load(imageUrl).into(holder.thumb);
+        Picasso.with(getContext()).load(imageUrl).placeholder(R.drawable.placeholder_image).into(holder.thumb);
+        Picasso.with(getContext()).load(userPicUrl).placeholder(R.drawable.placeholder_user_pic).into(holder.userPic);
     }
 
     private final static class MediaRowHolder {
         TextView user;
         ImageView thumb;
+        TextView caption;
+        ImageView userPic;
     }
 
 }
