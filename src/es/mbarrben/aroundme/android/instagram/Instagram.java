@@ -18,30 +18,30 @@ public class Instagram {
     private static final String CLIENT_SECRET = "9efc92c0af5a423391520c0ff3a12188";
     private static final String CALLBACK_URL = "aroundme://callback";
 
-    private Activity mActivity;
-    private String mAccessToken;
-    private DialogListener mExternalDialogListener;
-    private InstagramAuthDialog mAuthDialog;
-    private InstagramClient mInstagramClient;
+    private Activity activity;
+    private String accessToken;
+    private DialogListener externalDialogListener;
+    private InstagramAuthDialog authDialog;
+    private InstagramClient instagramClient;
 
-    private DialogListener mAuthDialoglistener = new DialogListener() {
+    private DialogListener authDialoglistener = new DialogListener() {
 
         @Override
         public void onError(DialogError error) {
             Log.e(getClass().getName(), "Error authenticating: " + error.getMessage());
 
-            if (mExternalDialogListener != null) {
-                mExternalDialogListener.onError(error);
+            if (externalDialogListener != null) {
+                externalDialogListener.onError(error);
             }
         }
 
         @Override
         public void onComplete(Bundle values) {
-            mAccessToken = values.getString("access_token");
-            Log.i(getClass().getName(), "access token = " + mAccessToken);
+            accessToken = values.getString("access_token");
+            Log.i(getClass().getName(), "access token = " + accessToken);
 
-            if (mExternalDialogListener != null) {
-                mExternalDialogListener.onComplete(values);
+            if (externalDialogListener != null) {
+                externalDialogListener.onComplete(values);
             }
         }
 
@@ -49,18 +49,18 @@ public class Instagram {
         public void onCancel() {
             Log.e(getClass().getName(), "User cancelled auth process");
 
-            if (mExternalDialogListener != null) {
-                mExternalDialogListener.onCancel();
+            if (externalDialogListener != null) {
+                externalDialogListener.onCancel();
             }
         }
     };
 
     public Instagram(Activity activity) {
-        this.mActivity = activity;
+        this.activity = activity;
     }
 
     public void setAuthDialogListener(DialogListener listener) {
-        this.mAuthDialoglistener = listener;
+        this.authDialoglistener = listener;
     }
 
     public void authorize() {
@@ -68,11 +68,10 @@ public class Instagram {
     }
 
     public void authorize(DialogListener listener) {
-        this.mExternalDialogListener = listener;
-        mAuthDialog = new InstagramAuthDialog(mActivity, mAuthDialoglistener, Instagram.CLIENT_ID,
-                Instagram.CALLBACK_URL);
-        mAuthDialog.setCancelable(false);
-        mAuthDialog.show();
+        this.externalDialogListener = listener;
+        authDialog = new InstagramAuthDialog(activity, authDialoglistener, Instagram.CLIENT_ID, Instagram.CALLBACK_URL);
+        authDialog.setCancelable(false);
+        authDialog.show();
     }
 
     public InstagramCollection<MediaPost> fetchNearMediaCollection(double latitude, double longitude, int distanceMetres) {
@@ -84,10 +83,10 @@ public class Instagram {
     }
 
     private InstagramClient getInstagramClient() {
-        if (mInstagramClient == null) {
-            mInstagramClient = new DefaultInstagramClient(Instagram.CLIENT_ID, mAccessToken);
+        if (instagramClient == null) {
+            instagramClient = new DefaultInstagramClient(Instagram.CLIENT_ID, accessToken);
         }
 
-        return mInstagramClient;
+        return instagramClient;
     }
 }
