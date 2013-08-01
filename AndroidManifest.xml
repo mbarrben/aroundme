@@ -33,8 +33,7 @@
         android:theme="@style/Theme.Aroundme" >
         <activity
             android:name=".activity.AroundMeActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
