@@ -6,7 +6,7 @@
 
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/visible_map_height"
         class="es.mbarrben.aroundme.android.fragment.AroundMeMapFragment"
         android:tag="map" />
 

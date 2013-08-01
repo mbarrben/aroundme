@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.app.SherlockListFragment;
 
 import es.mbarrben.aroundme.android.R;
+import es.mbarrben.aroundme.android.adapter.MediaAdapter;
 
 public class AroundMeFragment extends SherlockListFragment {
 
@@ -17,8 +18,11 @@ public class AroundMeFragment extends SherlockListFragment {
     }
 
     @Override
-    public void setEmptyText(CharSequence text) {
-
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        View header = getLayoutInflater(savedInstanceState).inflate(R.layout.header_pull_up, null);
+        getListView().addHeaderView(header);
+        setListAdapter(new MediaAdapter(getActivity()));
     }
 
 }
