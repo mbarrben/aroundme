@@ -61,6 +61,23 @@
             android:paddingRight="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/media_distance"
+            style="@style/Aroundme.Widget.TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_below="@id/media_user"
+            android:drawableLeft="@drawable/ic_distance"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/darker_gray" />
     </RelativeLayout>
 
 </FrameLayout>

@@ -3,6 +3,7 @@ package es.mbarrben.aroundme.android.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.blinxbox.restinstagram.types.MediaPost;
 import com.squareup.picasso.Picasso;
 
 import es.mbarrben.aroundme.android.R;
+import es.mbarrben.aroundme.android.map.Utils;
 
 public class MediaAdapter extends BindableAdapter<MediaPost> {
 
@@ -49,6 +51,7 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
         holder.thumb = (ImageView) view.findViewById(R.id.media_thumb);
         holder.caption = (TextView) view.findViewById(R.id.media_caption);
         holder.userPic = (ImageView) view.findViewById(R.id.media_user_pic);
+        holder.distance = (TextView) view.findViewById(R.id.media_distance);
         view.setTag(holder);
         return view;
     }
@@ -66,8 +69,31 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
         holder.user.setText(userName);
         holder.caption.setText(caption);
 
+        final int distance = getDistanceToUser(post);
+        if (distance > 0) {
+            holder.distance.setText(getContext().getString(R.string.distance_metres, distance));
+            holder.distance.setVisibility(View.VISIBLE);
+        } else {
+            holder.distance.setText("");
+            holder.distance.setVisibility(View.GONE);
+        }
+
         Picasso.with(getContext()).load(imageUrl).placeholder(R.drawable.placeholder_image).into(holder.thumb);
         Picasso.with(getContext()).load(userPicUrl).placeholder(R.drawable.placeholder_user_pic).into(holder.userPic);
+    }
+
+    private int getDistanceToUser(MediaPost post) {
+        Location userLocation = Utils.getLastKnownLocation(getContext());
+        if (userLocation != null) {
+            final double latitude = post.getLocation().getLatitude();
+            final double longitude = post.getLocation().getLongitude();
+            Location postLocation = new Location(userLocation);
+            postLocation.setLatitude(latitude);
+            postLocation.setLongitude(longitude);
+            return (int) userLocation.distanceTo(postLocation);
+        } else {
+            return 0;
+        }
     }
 
     private final static class MediaRowHolder {
@@ -75,6 +101,7 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
         ImageView thumb;
         TextView caption;
         ImageView userPic;
+        TextView distance;
     }
 
 }
