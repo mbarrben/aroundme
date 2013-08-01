@@ -78,8 +78,10 @@ public class MediaAdapter extends BindableAdapter<MediaPost> {
             holder.distance.setVisibility(View.GONE);
         }
 
-        Picasso.with(getContext()).load(imageUrl).placeholder(R.drawable.placeholder_image).into(holder.thumb);
-        Picasso.with(getContext()).load(userPicUrl).placeholder(R.drawable.placeholder_user_pic).into(holder.userPic);
+        Picasso.with(getContext()).load(imageUrl).error(R.drawable.placeholder_image)
+                .placeholder(R.drawable.placeholder_image).into(holder.thumb);
+        Picasso.with(getContext()).load(userPicUrl).error(R.drawable.placeholder_user_pic)
+                .placeholder(R.drawable.placeholder_user_pic).into(holder.userPic);
     }
 
     private int getDistanceToUser(MediaPost post) {

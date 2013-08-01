@@ -27,8 +27,8 @@ public class AroundMeInfoWindowAdapter implements InfoWindowAdapter {
         ImageView pic = (ImageView) view.findViewById(R.id.infowindow_pic);
 
         user.setText(marker.getTitle());
-
-        Picasso.with(context).load(marker.getSnippet()).placeholder(R.drawable.placeholder_user_pic).into(pic);
+        Picasso.with(context).load(marker.getSnippet()).error(R.drawable.placeholder_user_pic)
+                .placeholder(R.drawable.placeholder_user_pic).into(pic);
 
         return view;
     }
