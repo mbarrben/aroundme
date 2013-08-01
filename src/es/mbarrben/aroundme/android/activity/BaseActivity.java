@@ -28,6 +28,9 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
 
     private SharedPreferences preferences;
 
+    private Dialog networkDialog;
+    private Dialog gpsDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +53,7 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
-    protected Dialog createNewNetworkErrorDialog() {
+    protected void showNetworkErrorDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_no_internet);
         builder.setTitle(R.string.dialog_no_internet_title);
@@ -67,10 +70,11 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
                 finish();
             }
         });
-        return builder.create();
+        networkDialog = builder.create();
+        networkDialog.show();
     }
 
-    protected Dialog createNewEnableGpsDialog() {
+    protected void showEnableGpsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_gps, null);
         builder.setView(view);
@@ -90,7 +94,8 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
             }
         });
         builder.setNegativeButton(R.string.no, null);
-        return builder.create();
+        gpsDialog = builder.create();
+        gpsDialog.show();
     }
 
     protected boolean hasToAskForGpsAgain() {
@@ -99,5 +104,13 @@ public abstract class BaseActivity extends SherlockFragmentActivity {
 
     protected void setHasToAskForGpsAgain(boolean ask) {
         preferences.edit().putBoolean(PREFERENCE_ASK_FOR_GPS, ask).commit();
+    }
+
+    protected boolean canShowNetworkDialog() {
+        return networkDialog == null || !networkDialog.isShowing();
+    }
+
+    protected boolean canShowGpsDialog() {
+        return hasToAskForGpsAgain() && (gpsDialog == null || !gpsDialog.isShowing());
     }
 }

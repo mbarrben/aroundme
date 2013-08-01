@@ -1,7 +1,7 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dip"
+    android:layout_height="@dimen/visible_pullup_height"
     android:background="@color/holo_blue_dark"
     android:src="@drawable/ic_pull_up"
     tools:context=".AroundMeActivity" />

@@ -1,0 +1,6 @@
+<resources>
+
+    <dimen name="visible_map_height">260dp</dimen>
+    <dimen name="visible_pullup_height">40dp</dimen>
+
+</resources>

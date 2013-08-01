@@ -75,7 +75,9 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
         super.onResume();
 
         if (!isOnline()) {
-            createNewNetworkErrorDialog().show();
+            if (canShowNetworkDialog()) {
+                showNetworkErrorDialog();
+            }
             return;
         }
 
@@ -124,8 +126,8 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
 
     private void enableLocation() {
         try {
-            if (!isGpsEnabled() && hasToAskForGpsAgain()) {
-                createNewEnableGpsDialog().show();
+            if (!isGpsEnabled() && canShowGpsDialog()) {
+                showEnableGpsDialog();
             }
         } catch (Exception e) {
             Log.e(getClass().getName(), "GPS not available");
