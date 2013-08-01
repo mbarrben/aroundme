@@ -57,15 +57,14 @@ public class AroundMeMarkerOptionsChooser extends MarkerOptionsChooser {
             BitmapDescriptor icon;
             String title;
             if (isCluster) {
-                title = res.getQuantityString(R.plurals.count_points, clusterPoint.size(), clusterPoint.size());
                 int clusterSize = clusterPoint.size();
                 icon = BitmapDescriptorFactory.fromBitmap(getClusterBitmap(res, R.drawable.ic_map_pin_cluster,
                         clusterSize));
-                title = res.getQuantityString(R.plurals.count_points, clusterSize, clusterSize);
+                title = "";
             } else {
                 MediaPost data = (MediaPost) clusterPoint.getPointAtOffset(0).getTag();
                 icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin);
-                title = res.getString(R.string.point_number_x, data.getUser().getFullName());
+                title = data.getUser().getFullName();
             }
             markerOptions.icon(icon);
             markerOptions.title(title);
