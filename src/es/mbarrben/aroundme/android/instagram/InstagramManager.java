@@ -13,7 +13,7 @@ import com.blinxbox.restinstagram.InstagramCollection;
 import com.blinxbox.restinstagram.Parameter;
 import com.blinxbox.restinstagram.types.MediaPost;
 
-public class Instagram {
+public class InstagramManager {
     private static final String CLIENT_ID = "5b755d7249b6432bb37d2c5ff2dfaca3";
     private static final String CLIENT_SECRET = "9efc92c0af5a423391520c0ff3a12188";
     private static final String CALLBACK_URL = "aroundme://callback";
@@ -55,7 +55,7 @@ public class Instagram {
         }
     };
 
-    public Instagram(Activity activity) {
+    public InstagramManager(Activity activity) {
         this.activity = activity;
     }
 
@@ -69,7 +69,7 @@ public class Instagram {
 
     public void authorize(DialogListener listener) {
         this.externalDialogListener = listener;
-        authDialog = new InstagramAuthDialog(activity, authDialoglistener, Instagram.CLIENT_ID, Instagram.CALLBACK_URL);
+        authDialog = new InstagramAuthDialog(activity, authDialoglistener, InstagramManager.CLIENT_ID, InstagramManager.CALLBACK_URL);
         authDialog.setCancelable(false);
         authDialog.show();
     }
@@ -84,7 +84,7 @@ public class Instagram {
 
     private InstagramClient getInstagramClient() {
         if (instagramClient == null) {
-            instagramClient = new DefaultInstagramClient(Instagram.CLIENT_ID, accessToken);
+            instagramClient = new DefaultInstagramClient(InstagramManager.CLIENT_ID, accessToken);
         }
 
         return instagramClient;

@@ -19,7 +19,7 @@ import es.mbarrben.aroundme.android.adapter.MediaAdapter;
 import es.mbarrben.aroundme.android.fragment.AroundMeFragment;
 import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment;
 import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment.OnLocationChangeListener;
-import es.mbarrben.aroundme.android.instagram.Instagram;
+import es.mbarrben.aroundme.android.instagram.InstagramManager;
 import es.mbarrben.aroundme.android.instagram.MediaPostComparator;
 import es.mbarrben.aroundme.android.map.Utils;
 import es.mbarrben.aroundme.android.task.SafeAsyncTask;
@@ -27,7 +27,7 @@ import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 public class AroundMeActivity extends BaseActivity implements OnLocationChangeListener {
     private static final int DISTANCE_METRES = 5000;
 
-    private Instagram instagram;
+    private InstagramManager instagram;
     private AroundMeFragment aroundMeFragment;
     private AroundMeMapFragment mapFragment;
 
@@ -84,7 +84,7 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
         if (isAuthenticated) {
             enableLocation();
         } else {
-            instagram = new Instagram(this);
+            instagram = new InstagramManager(this);
             instagram.authorize(authDialogListener);
         }
     }
