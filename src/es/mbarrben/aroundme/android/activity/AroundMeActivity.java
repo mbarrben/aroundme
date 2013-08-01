@@ -51,6 +51,10 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aroundme);
+        
+        getSherlock().getActionBar().setIcon(R.drawable.title_image);
+        getSherlock().getActionBar().setDisplayShowTitleEnabled(false);
+        getSherlock().getActionBar().setDisplayUseLogoEnabled(false);
 
         aroundMeFragment = (AroundMeFragment) getSupportFragmentManager().findFragmentByTag("aroundme");
         mapFragment = (AroundMeMapFragment) getSupportFragmentManager().findFragmentByTag("map");
