@@ -37,7 +37,6 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
 
         @Override
         public void onError(DialogError error) {
-            // TODO Auto-generated method stub
         }
 
         @Override
@@ -48,7 +47,7 @@ public class AroundMeActivity extends SherlockFragmentActivity implements OnLoca
 
         @Override
         public void onCancel() {
-            // TODO Auto-generated method stub
+            finish();
         }
     };
 
