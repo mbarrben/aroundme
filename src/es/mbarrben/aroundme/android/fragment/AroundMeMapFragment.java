@@ -18,6 +18,7 @@ import com.twotoasters.clusterkraf.Clusterkraf;
 import com.twotoasters.clusterkraf.InputPoint;
 import com.twotoasters.clusterkraf.Options;
 
+import es.mbarrben.aroundme.android.adapter.AroundMeInfoWindowAdapter;
 import es.mbarrben.aroundme.android.map.ClusterMapOptions;
 import es.mbarrben.aroundme.android.map.OnSignificantLocationChangeListener;
 import es.mbarrben.aroundme.android.map.Utils;
@@ -33,7 +34,14 @@ public class AroundMeMapFragment extends SupportMapFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initMap();
         moveToLastKownLocation();
+    }
+
+    private void initMap() {
+        if (getMap() != null) {
+            getMap().setInfoWindowAdapter(new AroundMeInfoWindowAdapter(getActivity()));
+        }
     }
 
     private void moveToLastKownLocation() {

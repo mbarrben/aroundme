@@ -38,7 +38,7 @@ public class AroundMeMarkerOptionsChooser extends MarkerOptionsChooser {
         clusterPaintMedium.setColor(Color.WHITE);
         clusterPaintMedium.setAlpha(255);
         clusterPaintMedium.setTextAlign(Paint.Align.CENTER);
-        clusterPaintMedium.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC));
+        clusterPaintMedium.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
         clusterPaintMedium.setTextSize(res.getDimension(R.dimen.cluster_text_size_medium));
 
         clusterPaintSmall = new Paint(clusterPaintMedium);
@@ -54,36 +54,29 @@ public class AroundMeMarkerOptionsChooser extends MarkerOptionsChooser {
         if (context != null) {
             Resources res = context.getResources();
             boolean isCluster = clusterPoint.size() > 1;
-            BitmapDescriptor icon;
-            String title;
+            final BitmapDescriptor icon;
+            final String title;
+            final String snippet;
             if (isCluster) {
                 int clusterSize = clusterPoint.size();
-                icon = BitmapDescriptorFactory.fromBitmap(getClusterBitmap(res, R.drawable.ic_map_pin_cluster,
-                        clusterSize));
+                icon = BitmapDescriptorFactory.fromBitmap(getClusterBitmap(res, clusterSize));
                 title = "";
+                snippet = "";
             } else {
                 MediaPost data = (MediaPost) clusterPoint.getPointAtOffset(0).getTag();
                 icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin);
                 title = data.getUser().getFullName();
+                snippet = data.getUser().getProfilePicture();
             }
             markerOptions.icon(icon);
             markerOptions.title(title);
+            markerOptions.snippet(snippet);
             markerOptions.anchor(0.5f, 1.0f);
         }
     }
 
-    @SuppressLint("NewApi")
-    private Bitmap getClusterBitmap(Resources res, int resourceId, int clusterSize) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            options.inMutable = true;
-        }
-        Bitmap bitmap = BitmapFactory.decodeResource(res, resourceId, options);
-        if (bitmap.isMutable() == false) {
-            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        }
-
+    private Bitmap getClusterBitmap(Resources res, int clusterSize) {
+        Bitmap bitmap = getMarkerBitmap(res, R.drawable.ic_map_pin_cluster);
         Canvas canvas = new Canvas(bitmap);
 
         Paint paint = null;
@@ -103,4 +96,21 @@ public class AroundMeMarkerOptionsChooser extends MarkerOptionsChooser {
 
         return bitmap;
     }
+
+    @SuppressLint("NewApi")
+    private Bitmap getMarkerBitmap(Resources res, int resourceId) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            options.inMutable = true;
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeResource(res, resourceId, options);
+        if (bitmap.isMutable() == false) {
+            bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        }
+
+        return bitmap;
+    }
+
 }
