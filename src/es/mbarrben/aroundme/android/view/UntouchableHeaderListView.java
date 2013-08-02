@@ -11,10 +11,9 @@ import es.mbarrben.aroundme.android.R;
 
 public class UntouchableHeaderListView extends ListView {
 
-    private int untouchableHeaderRes = 0;
+    private static final int NO_RESOURCE = 0;
 
     private View untouchableItem;
-    private View behindView;
 
     public UntouchableHeaderListView(Context context) {
         this(context, null);
@@ -29,29 +28,15 @@ public class UntouchableHeaderListView extends ListView {
         initUntouchableView(attrs);
     }
 
-    public void setBehindView(View view) {
-        behindView = view;
-    }
-
     private void initUntouchableView(AttributeSet attrs) {
         Context context = getContext();
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.UntouchableHeaderListView);
-        untouchableHeaderRes = a.getResourceId(R.styleable.UntouchableHeaderListView_untouchableViewResource,
-                untouchableHeaderRes);
+        final int untouchableHeaderRes = a.getResourceId(R.styleable.UntouchableHeaderListView_untouchableViewResource,
+                NO_RESOURCE);
         a.recycle();
 
         LayoutInflater inflater = LayoutInflater.from(context);
         untouchableItem = inflater.inflate(untouchableHeaderRes, this, false);
-        untouchableItem.setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (behindView != null) {
-                    behindView.onTouchEvent(event);
-                }
-                return true;
-            }
-        });
         addHeaderView(untouchableItem);
     }
 
@@ -63,17 +48,6 @@ public class UntouchableHeaderListView extends ListView {
         }
 
         return super.dispatchTouchEvent(event);
-    }
-
-    @Override
-    public boolean removeHeaderView(View v) {
-        boolean result = false;
-
-        if (getAdapter() != null) {
-            result = super.removeHeaderView(v);
-        }
-
-        return result;
     }
 
 }
