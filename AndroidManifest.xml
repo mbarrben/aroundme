@@ -31,7 +31,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Aroundme" >
         <activity
-            android:name=".activity.AroundMeActivity"
+            android:name=".activity.AroundMeActivity_"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

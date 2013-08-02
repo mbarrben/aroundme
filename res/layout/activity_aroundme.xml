@@ -5,15 +5,15 @@
     tools:context=".AroundMeActivity" >
 
     <fragment
+        android:id="@+id/fragment_map"
         android:layout_width="match_parent"
         android:layout_height="@dimen/visible_map_height"
-        class="es.mbarrben.aroundme.android.fragment.AroundMeMapFragment"
-        android:tag="map" />
+        class="es.mbarrben.aroundme.android.fragment.AroundMeMapFragment" />
 
     <fragment
+        android:id="@+id/fragment_aroundme"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="es.mbarrben.aroundme.android.fragment.AroundMeFragment"
-        android:tag="aroundme" />
+        class="es.mbarrben.aroundme.android.fragment.AroundMeFragment" />
 
 </FrameLayout>

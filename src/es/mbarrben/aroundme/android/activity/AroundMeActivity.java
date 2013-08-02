@@ -8,11 +8,15 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.actionbarsherlock.view.Menu;
 import com.blinxbox.restig.auth.DialogError;
 import com.blinxbox.restig.auth.InstagramAuthDialog.DialogListener;
 import com.blinxbox.restinstagram.InstagramCollection;
 import com.blinxbox.restinstagram.types.MediaPost;
+import com.googlecode.androidannotations.annotations.AfterInject;
+import com.googlecode.androidannotations.annotations.Background;
+import com.googlecode.androidannotations.annotations.EActivity;
+import com.googlecode.androidannotations.annotations.FragmentById;
+import com.googlecode.androidannotations.annotations.UiThread;
 
 import es.mbarrben.aroundme.android.R;
 import es.mbarrben.aroundme.android.adapter.MediaAdapter;
@@ -22,14 +26,17 @@ import es.mbarrben.aroundme.android.fragment.AroundMeMapFragment.OnLocationChang
 import es.mbarrben.aroundme.android.instagram.InstagramManager;
 import es.mbarrben.aroundme.android.instagram.MediaPostComparator;
 import es.mbarrben.aroundme.android.map.Utils;
-import es.mbarrben.aroundme.android.task.SafeAsyncTask;
 
-public class AroundMeActivity extends BaseActivity implements OnLocationChangeListener {
+@EActivity(R.layout.activity_aroundme)
+public class AroundMeActivity extends BaseActivity {
     private static final int DISTANCE_METRES = 5000;
 
     private InstagramManager instagram;
-    private AroundMeFragment aroundMeFragment;
-    private AroundMeMapFragment mapFragment;
+
+    @FragmentById(R.id.fragment_aroundme)
+    protected AroundMeFragment aroundMeFragment;
+    @FragmentById(R.id.fragment_map)
+    protected AroundMeMapFragment mapFragment;
 
     private boolean isAuthenticated = false;
 
@@ -51,17 +58,21 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_aroundme);
+    private OnLocationChangeListener locationChangeListener = new OnLocationChangeListener() {
+
+        @Override
+        public void onLocationChange(double latitude, double longitude) {
+            fetchPosts(latitude, longitude);
+        }
+    };
+
+    @AfterInject
+    protected void init() {
+        instagram = new InstagramManager(this);
 
         getSherlock().getActionBar().setIcon(R.drawable.title_image);
         getSherlock().getActionBar().setDisplayShowTitleEnabled(false);
         getSherlock().getActionBar().setDisplayUseLogoEnabled(false);
-
-        aroundMeFragment = (AroundMeFragment) getSupportFragmentManager().findFragmentByTag("aroundme");
-        mapFragment = (AroundMeMapFragment) getSupportFragmentManager().findFragmentByTag("map");
     }
 
     @Override
@@ -84,44 +95,34 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
         if (isAuthenticated) {
             enableLocation();
         } else {
-            instagram = new InstagramManager(this);
             instagram.authorize(authDialogListener);
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.aroundme, menu);
-        return true;
+    @Background
+    protected void fetchPosts(double latitude, double longitude) {
+        InstagramCollection<MediaPost> collection = instagram.fetchNearMediaCollection(latitude, longitude,
+                DISTANCE_METRES);
+        List<MediaPost> media = new ArrayList<MediaPost>(collection.getData());
+
+        Location location = Utils.getLastKnownLocation(getApplicationContext());
+        MediaPostComparator comparator = new MediaPostComparator(location);
+        Collections.sort(media, comparator);
+
+        fillList(media);
+        fillMap(media);
     }
 
-    @Override
-    public void onLocationChange(final double latitude, final double longitude) {
-        SafeAsyncTask<List<MediaPost>> task = new SafeAsyncTask<List<MediaPost>>() {
+    @UiThread
+    protected void fillList(List<MediaPost> media) {
+        MediaAdapter adapter = new MediaAdapter(getApplicationContext());
+        adapter.setMediaList(media);
+        aroundMeFragment.setListAdapter(adapter);
+    }
 
-            @Override
-            public List<MediaPost> call() throws Exception {
-                InstagramCollection<MediaPost> collection = instagram.fetchNearMediaCollection(latitude, longitude,
-                        DISTANCE_METRES);
-                List<MediaPost> media = new ArrayList<MediaPost>(collection.getData());
-
-                Location location = Utils.getLastKnownLocation(getApplicationContext());
-                MediaPostComparator comparator = new MediaPostComparator(location);
-                Collections.sort(media, comparator);
-
-                return media;
-            }
-
-            @Override
-            protected void onSuccess(List<MediaPost> media) throws Exception {
-                MediaAdapter adapter = new MediaAdapter(getApplicationContext());
-                adapter.setMediaList(media);
-                aroundMeFragment.setListAdapter(adapter);
-                mapFragment.setMediaPostCollection(media);
-            }
-
-        };
-        task.execute();
+    @UiThread
+    protected void fillMap(List<MediaPost> media) {
+        mapFragment.setMediaPostCollection(media);
     }
 
     private void enableLocation() {
@@ -134,7 +135,7 @@ public class AroundMeActivity extends BaseActivity implements OnLocationChangeLi
         }
 
         if (mapFragment != null) {
-            mapFragment.enableLocation(AroundMeActivity.this);
+            mapFragment.enableLocation(locationChangeListener);
         }
     }
 
