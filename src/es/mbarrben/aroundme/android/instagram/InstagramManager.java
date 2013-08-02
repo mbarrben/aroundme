@@ -13,16 +13,18 @@ import com.blinxbox.restinstagram.InstagramCollection;
 import com.blinxbox.restinstagram.Parameter;
 import com.blinxbox.restinstagram.types.MediaPost;
 
-public class InstagramManager {
-    private static final String CLIENT_ID = "5b755d7249b6432bb37d2c5ff2dfaca3";
-    private static final String CLIENT_SECRET = "9efc92c0af5a423391520c0ff3a12188";
-    private static final String CALLBACK_URL = "aroundme://callback";
+import es.mbarrben.aroundme.android.R;
 
+public class InstagramManager {
     private Activity activity;
     private String accessToken;
     private DialogListener externalDialogListener;
     private InstagramAuthDialog authDialog;
     private InstagramClient instagramClient;
+
+    private final String clientId;
+    private final String clientSecret;
+    private final String callbackUrl;
 
     private DialogListener authDialoglistener = new DialogListener() {
 
@@ -57,6 +59,9 @@ public class InstagramManager {
 
     public InstagramManager(Activity activity) {
         this.activity = activity;
+        clientId = activity.getString(R.string.instagram_client_id);
+        clientSecret = activity.getString(R.string.instagram_client_secret);
+        callbackUrl = activity.getString(R.string.instagram_callback_url);
     }
 
     public void setAuthDialogListener(DialogListener listener) {
@@ -69,7 +74,7 @@ public class InstagramManager {
 
     public void authorize(DialogListener listener) {
         this.externalDialogListener = listener;
-        authDialog = new InstagramAuthDialog(activity, authDialoglistener, InstagramManager.CLIENT_ID, InstagramManager.CALLBACK_URL);
+        authDialog = new InstagramAuthDialog(activity, authDialoglistener, clientId, callbackUrl);
         authDialog.setCancelable(false);
         authDialog.show();
     }
@@ -84,7 +89,7 @@ public class InstagramManager {
 
     private InstagramClient getInstagramClient() {
         if (instagramClient == null) {
-            instagramClient = new DefaultInstagramClient(InstagramManager.CLIENT_ID, accessToken);
+            instagramClient = new DefaultInstagramClient(clientId, accessToken);
         }
 
         return instagramClient;

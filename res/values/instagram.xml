@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="instagram_client_id">{INSERT YOUR CLIENT ID HERE}</string>
+    <string name="instagram_client_secret">{INSERT YOUR CLIENT SECRET HERE}</string>
+    <string name="instagram_callback_url">{INSERT YOUR CALLBACK URL HERE}</string>
+
+</resources>
