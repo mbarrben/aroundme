@@ -5,11 +5,11 @@ Tiny Android app that shows near Instagram® posts.
 
 Libraries used
 ----------------------
-[Action Bar Sherlock][1] by Jake Wharton
-[Google Play Services Library][2] by Google, Inc.
-[Clusterkraf][3] by Two Toasters
-[Picasso][4] by Square, Inc
-[RestIG][5] by Efi Merdler-Kravitz, Nir Segev and [the Android open-source community][6]
+* [Action Bar Sherlock][1] by Jake Wharton
+* [Google Play Services Library][2] by Google, Inc.
+* [Clusterkraf][3] by Two Toasters
+* [Picasso][4] by Square, Inc
+* [RestIG][5] by Efi Merdler-Kravitz, Nir Segev and [the Android open-source community][6]
 
 Acknowledgements
 ----------------------
